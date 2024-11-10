@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}User Information{% endblock %}</h1>
+  {% endblock %}
+
+{% block content %}
+  {% if g.user %}
+
+  <table id="content">
+    <tr>
+      <th>key</th>
+      <th>value</th>
+    <tr>
+      <td> Username </td>
+      <td id="username"> {{ g.user['username'] }}</td>
+    </tr>
+    <tr>
+      <td> First name </td>
+      <td id="firstname"> {{ g.user['firstname'] }} </td>
+    </tr>
+    <tr>
+      <td> Last name </td>
+      <td id="lastname"> {{ g.user['lastname'] }} </td>
+    </tr>
+    <tr>
+      <td> Phone number </td>
+      <td id="phone"> {{ g.user['phone'] }}</td>
+    </tr>
+</tr>
+    
+</table>
+  
+  
+  {% endif %}
+{% endblock %}

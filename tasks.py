@@ -41,3 +41,17 @@ def tests(context, headed=False, browser="chromium", tracing=False, video=False)
         f"{ROOT}/tests",
     ]
     subprocess.run(" ".join(cmd), shell=True, check=True)
+
+
+@task()
+def init_db(context):
+    """Initialize the DB"""
+    cmd = ["flask", "--app", "testing_demo", "init-db"]
+    subprocess.run(" ".join(cmd), shell=True, check=True)
+
+
+@task(pre=[init_db])
+def app(context):
+    """Run the Flask app."""
+    cmd = ["flask", "--app", "testing_demo", "run", "--host=0.0.0.0", "--port=8080"]
+    subprocess.run(" ".join(cmd), shell=True, check=True)

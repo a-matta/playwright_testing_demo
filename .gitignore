@@ -10,3 +10,6 @@ report/
 
 # playwright
 test-results/
+
+# app data
+instance
