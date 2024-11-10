@@ -1,0 +1,9 @@
+{
+    "recommendations": [
+        "ms-playwright.playwright",
+        "ms-python.black-formatter",
+        "ms-python.isort",
+        "ms-python.python",
+        "ritwickdey.LiveServer"
+    ]
+}

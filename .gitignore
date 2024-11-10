@@ -1,0 +1,12 @@
+.venv/
+**/__pycache__/
+
+# pytest
+pytest.log
+.pytest_cache/
+
+# pytest-html
+report/
+
+# playwright
+test-results/
