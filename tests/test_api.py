@@ -45,6 +45,14 @@ def get_user_details(api_request_context: APIRequestContext, token: str, usernam
     return response
 
 
+def get_all_users(api_request_context: APIRequestContext, token: str):
+    """Get user details GET /api/users/{username} and returns the JSON response"""
+    url = f"/api/users"
+    response = api_request_context.get(url, headers={"Token": token}).json()
+    logging.info(response)
+    return response
+
+
 def test_new_user_can_be_registered_and_its_data_fetched(fake_user, api_request_context: APIRequestContext):
     response = create_user(api_request_context, fake_user)
     assert response["status"] == "SUCCESS"
@@ -82,3 +90,26 @@ def test_duplicate_username_registration_is_not_allowed(fake_user, api_request_c
     response = create_user(api_request_context, new_user)
     assert response["status"] == "FAILURE"
     assert response["message"] == "User exists"
+
+
+def test_user_details_cannot_be_fetched_without_token(fake_user, api_request_context: APIRequestContext):
+    response = create_user(api_request_context, fake_user)
+    assert response["status"] == "SUCCESS"
+    response = get_user_details(api_request_context, "", fake_user["username"])
+    assert response["status"] == "FAILURE"
+    assert response["message"] == "Token authentication required"
+
+
+def test_users_list_cannot_be_fetched_without_token(api_request_context: APIRequestContext):
+    response = get_all_users(api_request_context, "")
+    assert response["status"] == "FAILURE"
+    assert response["message"] == "Token authentication required"
+
+
+# Users List Contains Newly Created User
+#    Create New User
+#    ${TOKEN}    Fetch Token For User In Context
+#    ${RESPONSE}    Get All Users    ${TOKEN}
+#    Assert Success    ${RESPONSE}
+#    ${USERS_LIST}    Get From Dictionary    ${RESPONSE}    payload
+#    List Should Contain Value    ${USERS_LIST}    ${USERNAME}

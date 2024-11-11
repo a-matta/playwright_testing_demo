@@ -57,17 +57,21 @@ def create_token():
     return jsonify({"status": "SUCCESS", "token": token}), 200
 
 
-@bp.route("/users", methods=(["GET", "POST"]))
-def users():
+@bp.route("/users", methods=(["POST"]))
+def create_user():
     """Register a new user.
 
     Validates that the username is not already taken. Hashes the
     password for security.
     """
-    if request.method == "GET":
-        return get_all_users()
-    elif request.method == "POST":
-        return create_user(request)
+    return create_user(request)
+
+
+@bp.route("/users", methods=(["GET"]))
+@token_required
+def users():
+    """Fetch all user ids."""
+    return get_all_users()
 
 
 @bp.route("/users/<username>", methods=(["GET", "PUT"]))
