@@ -6,6 +6,7 @@ from playwright.sync_api import Page, expect
 
 from .pages.login_page import LoginPage
 from .pages.registration_page import RegisterPage
+from .pages.userdetails_page import UserDetailsPage
 
 fake = Faker()
 
@@ -23,14 +24,6 @@ def fake_user():
 
 base_url = "http://127.0.0.1:8080"
 
-ui_elements = {
-    "button_logout": "//a[@href='/logout' and text()='Log Out']",
-    "info_username": "//td[@id='username']",
-    "info_firstname": "//td[@id='firstname']",
-    "info_lastname": "//td[@id='lastname']",
-    "info_phone": "//td[@id='phone']",
-}
-
 
 def register_user(page: Page, fake_user):
     r = RegisterPage(page)
@@ -40,11 +33,7 @@ def register_user(page: Page, fake_user):
     r.input_firstname(fake_user["first_name"])
     r.input_lastname(fake_user["last_name"])
     r.input_phone(fake_user["phone_number"])
-    r.submit_registration()
-
-    error = f"User {fake_user["username"]} is already registered."
-    error_element = f"//div[@class='flash' and contains(text(), '{error}')]"
-    expect(page.locator(error_element)).not_to_be_visible()
+    r.submit_registration(fake_user["username"])
 
 
 def test_new_user_can_register_and_check_own_data(page: Page, fake_user):
@@ -56,13 +45,8 @@ def test_new_user_can_register_and_check_own_data(page: Page, fake_user):
     l.input_password(fake_user["password"])
     l.login()
 
-    page.locator(ui_elements["button_logout"]).is_visible()
-
-    expect(page).to_have_url(f"{base_url}/user")
-    expect(page.locator(ui_elements["info_username"])).to_have_text(fake_user["username"])
-    expect(page.locator(ui_elements["info_firstname"])).to_have_text(fake_user["first_name"])
-    expect(page.locator(ui_elements["info_lastname"])).to_have_text(fake_user["last_name"])
-    expect(page.locator(ui_elements["info_phone"])).to_have_text(fake_user["phone_number"])
+    ud = UserDetailsPage(page)
+    ud.verify_details(fake_user)
 
 
 def test_login_fails_if_username_and_password_does_not_match(page: Page, fake_user):
@@ -72,5 +56,5 @@ def test_login_fails_if_username_and_password_does_not_match(page: Page, fake_us
     l.navigate()
     l.input_username(fake_user["username"])
     l.input_password("invalid-password")
-    l.login()
+    l.login(success=False)
     page.locator("//p[contains(text(), 'You provided incorrect login details')]").is_visible()

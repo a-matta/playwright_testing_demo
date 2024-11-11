@@ -36,5 +36,8 @@ class RegisterPage:
     def input_phone(self, phone):
         self.phone_input.fill(phone)
 
-    def submit_registration(self):
+    def submit_registration(self, username):
         self.register_submit.click()
+        error = f"User {username} is already registered."
+        error_element = f"//div[@class='flash' and contains(text(), '{error}')]"
+        expect(self.page.locator(error_element)).not_to_be_visible()

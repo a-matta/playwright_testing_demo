@@ -11,6 +11,7 @@ class LoginPage:
         self.username = page.locator("#username")
         self.password = page.locator("#password")
         self.login_button = page.locator("//input[@type='submit' and @value='Log In']")
+        self.logout_button = page.locator("//a[@href='/logout' and text()='Log Out']")
 
     def navigate(self):
         self.page.goto(f"{base_url}/login")
@@ -22,5 +23,7 @@ class LoginPage:
     def input_password(self, password):
         self.password.fill(password)
 
-    def login(self):
+    def login(self, success=True):
         self.login_button.click()
+        if success:
+            self.logout_button.is_visible()
