@@ -36,25 +36,22 @@ def register_user(page: Page, fake_user):
     r.submit_registration(fake_user["username"])
 
 
-def test_new_user_can_register_and_check_own_data(page: Page, fake_user):
-    register_user(page, fake_user)
-
+def login_user(page: Page, fake_user, success=True):
     l = LoginPage(page)
     l.navigate()
     l.input_username(fake_user["username"])
     l.input_password(fake_user["password"])
-    l.login()
+    l.login(success=success)
 
+
+def test_new_user_can_register_and_check_own_data(page: Page, fake_user):
+    register_user(page, fake_user)
+    login_user(page, fake_user)
     ud = UserDetailsPage(page)
     ud.verify_details(fake_user)
 
 
 def test_login_fails_if_username_and_password_does_not_match(page: Page, fake_user):
     register_user(page, fake_user)
-
-    l = LoginPage(page)
-    l.navigate()
-    l.input_username(fake_user["username"])
-    l.input_password("invalid-password")
-    l.login(success=False)
+    login_user(page, fake_user, success=False)
     page.locator("//p[contains(text(), 'You provided incorrect login details')]").is_visible()
