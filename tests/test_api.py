@@ -11,7 +11,7 @@ from .libraries.api_utils import create_user, get_all_users, get_auth_token, get
 
 @pytest.fixture(scope="session")
 def api_request_context(playwright: Playwright) -> Generator[APIRequestContext, None, None]:
-    request_context = playwright.request.new_context(base_url=base_url)
+    request_context = playwright.request.new_context(base_url=f"{base_url}/api/")
     yield request_context
     request_context.dispose()
 
@@ -20,8 +20,6 @@ def test_new_user_can_be_registered_and_its_data_fetched(fake_user, api_request_
     response = create_user(api_request_context, fake_user)
     assert response["status"] == "SUCCESS"
     response = get_auth_token(api_request_context, fake_user["username"], fake_user["password"])
-    logging.info(response)
-    print(response)
     token = response["token"]
     expected = {
         "firstname": fake_user["firstname"],
