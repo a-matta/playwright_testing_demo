@@ -2,7 +2,7 @@ from datetime import datetime
 
 import pytest
 from faker import Faker
-from playwright.sync_api import Page, expect
+from playwright.sync_api import Page
 
 from .pages.login_page import LoginPage
 from .pages.registration_page import RegisterPage
@@ -20,9 +20,6 @@ def fake_user():
         "last_name": fake.last_name(),
         "phone_number": fake.phone_number(),
     }
-
-
-base_url = "http://127.0.0.1:8080"
 
 
 def register_user(page: Page, fake_user):

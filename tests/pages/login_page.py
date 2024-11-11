@@ -2,7 +2,7 @@ import re
 
 from playwright.sync_api import Page, expect
 
-base_url = "http://127.0.0.1:8080"
+from ..environment import base_url
 
 
 class LoginPage:
