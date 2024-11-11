@@ -46,7 +46,8 @@ def get_user_details(api_request_context: APIRequestContext, token: str, usernam
 
 
 def test_new_user_can_be_registered_and_its_data_fetched(fake_user, api_request_context: APIRequestContext):
-    create_user(api_request_context, fake_user)
+    response = create_user(api_request_context, fake_user)
+    assert response["status"] == "SUCCESS"
     response = get_auth_token(api_request_context, fake_user["username"], fake_user["password"])
     logging.info(response)
     print(response)
@@ -58,3 +59,26 @@ def test_new_user_can_be_registered_and_its_data_fetched(fake_user, api_request_
     }
     response = get_user_details(api_request_context, token, fake_user["username"])
     assert response["payload"] == expected
+
+
+def test_token_fetching_fails_if_username_passwords_do_not_match(fake_user, api_request_context: APIRequestContext):
+    response = create_user(api_request_context, fake_user)
+    assert response["status"] == "SUCCESS"
+    response = get_auth_token(api_request_context, fake_user["username"], "invalid_password")
+    assert response["status"] == "FAILURE"
+
+
+def test_duplicate_username_registration_is_not_allowed(fake_user, api_request_context: APIRequestContext):
+    response = create_user(api_request_context, fake_user)
+    assert response["status"] == "SUCCESS"
+
+    new_user = {
+        "username": fake_user["username"],
+        "password": "password",
+        "firstname": "firstname",
+        "lastname": "lastname",
+        "phone": "11111111",
+    }
+    response = create_user(api_request_context, new_user)
+    assert response["status"] == "FAILURE"
+    assert response["message"] == "User exists"
