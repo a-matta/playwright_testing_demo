@@ -1,25 +1,8 @@
-from datetime import datetime
-
-import pytest
-from faker import Faker
 from playwright.sync_api import Page
 
 from .pages.login_page import LoginPage
 from .pages.registration_page import RegisterPage
 from .pages.userdetails_page import UserDetailsPage
-
-fake = Faker()
-
-
-@pytest.fixture
-def fake_user():
-    return {
-        "username": str(datetime.now().timestamp()).replace(".", ""),
-        "password": fake.password(),
-        "first_name": fake.first_name(),
-        "last_name": fake.last_name(),
-        "phone_number": fake.phone_number(),
-    }
 
 
 def register_user(page: Page, fake_user):
@@ -27,9 +10,9 @@ def register_user(page: Page, fake_user):
     r.navigate()
     r.input_username(fake_user["username"])
     r.input_password(fake_user["password"])
-    r.input_firstname(fake_user["first_name"])
-    r.input_lastname(fake_user["last_name"])
-    r.input_phone(fake_user["phone_number"])
+    r.input_firstname(fake_user["firstname"])
+    r.input_lastname(fake_user["lastname"])
+    r.input_phone(fake_user["phone"])
     r.submit_registration()
     return r
 

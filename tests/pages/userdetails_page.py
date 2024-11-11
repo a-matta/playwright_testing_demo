@@ -14,6 +14,6 @@ class UserDetailsPage:
     def verify_details(self, user):
         expect(self.page).to_have_url(f"{base_url}/user")
         expect(self.info_username).to_have_text(user["username"])
-        expect(self.info_firstname).to_have_text(user["first_name"])
-        expect(self.info_lastname).to_have_text(user["last_name"])
-        expect(self.info_phone).to_have_text(user["phone_number"])
+        expect(self.info_firstname).to_have_text(user["firstname"])
+        expect(self.info_lastname).to_have_text(user["lastname"])
+        expect(self.info_phone).to_have_text(user["phone"])

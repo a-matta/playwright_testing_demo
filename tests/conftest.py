@@ -1,7 +1,22 @@
+from datetime import datetime
 from pathlib import Path
 
 import pytest
+from faker import Faker
 from slugify import slugify
+
+fake = Faker()
+
+
+@pytest.fixture
+def fake_user():
+    return {
+        "username": str(datetime.now().timestamp()).replace(".", ""),
+        "password": fake.password(),
+        "firstname": fake.first_name(),
+        "lastname": fake.last_name(),
+        "phone": fake.phone_number(),
+    }
 
 
 # Attach screenshots to the pytest-html report
