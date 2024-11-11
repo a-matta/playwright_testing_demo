@@ -1,12 +1,22 @@
 # Testing Demo
 
-A short description of the project
+Demonstrate testing of a UI and API with Pytest and Playwright.
+
+The sample application allows the following:
+1. Web UI
+   1. Allows user registration
+   2. Login to view user details
+   3. Logout
+2. API
+   1. Allows user registration
+   2. Fetch auth token
+   3. Get user details
+   4. Get list of all users
+   5. Update user details
 
 ---
 
-*Documentation**: [https://a-matta.github.io/testing_demo](https://a-matta.github.io/testing_demo)
-
-**Source Code**: [https://github.com/a-matta/testing_demo](https://github.com/a-matta/testing_demo)
+**Source Code**: [https://github.com/a-matta/testing_demo_playwright_python](https://github.com/a-matta/testing_demo_playwright_python)
 
 ---
 
@@ -28,9 +38,13 @@ A short description of the project
   ```sh
   playwright install
   ```
-* Running the tests
+* Run the application
   ```sh
   # Uses PyInvoke
+  inv app
+  ```
+* Running the tests
+  ```sh
   inv tests
   ```
 
