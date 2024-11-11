@@ -53,6 +53,16 @@ def get_all_users(api_request_context: APIRequestContext, token: str):
     return response
 
 
+def update_user(api_request_context: APIRequestContext, token: str, username: str, **data):
+    """Get user details GET /api/users/{username} and returns the JSON response"""
+    url = f"/api/users/{username}"
+    response = api_request_context.put(
+        url, headers={"Token": token, "content-type": "application/json"}, data=data
+    ).json()
+    logging.info(response)
+    return response
+
+
 def test_new_user_can_be_registered_and_its_data_fetched(fake_user, api_request_context: APIRequestContext):
     response = create_user(api_request_context, fake_user)
     assert response["status"] == "SUCCESS"
@@ -66,6 +76,7 @@ def test_new_user_can_be_registered_and_its_data_fetched(fake_user, api_request_
         "phone": fake_user["phone"],
     }
     response = get_user_details(api_request_context, token, fake_user["username"])
+    assert response["status"] == "SUCCESS"
     assert response["payload"] == expected
 
 
@@ -106,10 +117,35 @@ def test_users_list_cannot_be_fetched_without_token(api_request_context: APIRequ
     assert response["message"] == "Token authentication required"
 
 
-# Users List Contains Newly Created User
-#    Create New User
-#    ${TOKEN}    Fetch Token For User In Context
-#    ${RESPONSE}    Get All Users    ${TOKEN}
-#    Assert Success    ${RESPONSE}
-#    ${USERS_LIST}    Get From Dictionary    ${RESPONSE}    payload
-#    List Should Contain Value    ${USERS_LIST}    ${USERNAME}
+def test_users_list_contains_newly_created_user(fake_user, api_request_context: APIRequestContext):
+    response = create_user(api_request_context, fake_user)
+    assert response["status"] == "SUCCESS"
+    response = get_auth_token(api_request_context, fake_user["username"], fake_user["password"])
+    token = response["token"]
+    response = get_all_users(api_request_context, token)
+    assert response["status"] == "SUCCESS"
+    assert fake_user["username"] in response["payload"]
+
+
+def test_user_information_can_be_updated(fake_user, api_request_context: APIRequestContext):
+    response = create_user(api_request_context, fake_user)
+    assert response["status"] == "SUCCESS"
+    response = get_auth_token(api_request_context, fake_user["username"], fake_user["password"])
+    token = response["token"]
+    response = update_user(
+        api_request_context,
+        token,
+        fake_user["username"],
+        firstname="firstname",
+        lastname="lastname",
+        phone="11111111",
+    )
+    assert response["status"] == "SUCCESS"
+    expected = {
+        "firstname": "firstname",
+        "lastname": "lastname",
+        "phone": "11111111",
+    }
+    response = get_user_details(api_request_context, token, fake_user["username"])
+    assert response["status"] == "SUCCESS"
+    assert response["payload"] == expected
