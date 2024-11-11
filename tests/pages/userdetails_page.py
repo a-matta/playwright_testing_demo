@@ -1,6 +1,6 @@
 from playwright.sync_api import Page, expect
 
-from ..environment import base_url
+from ..global_vars import base_url
 
 
 class UserDetailsPage:

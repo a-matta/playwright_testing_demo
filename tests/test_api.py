@@ -5,7 +5,7 @@ from typing import Generator
 import pytest
 from playwright.sync_api import APIRequestContext, Playwright
 
-from .environment import base_url
+from .global_vars import base_url
 from .libraries.api_utils import create_user, get_all_users, get_auth_token, get_user_details, update_user
 
 
